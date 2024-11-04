@@ -1,20 +1,38 @@
 <?php
 
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FeaturesController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
-// route::get("/", [ProductController::class, 'index'])->name('product.product');
-// route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-// route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
-// Route::get('/product/{id}/show', [ProductController::class, 'show'])->name('product.show');
-// route::get('/product/edit{id}', [ProductController::class, 'edit'])->name('product.edit');
-// route::put('/product/update{id}', [ProductController::class, 'update'])->name('product.update');
-// route::delete('/produk/delete{id}', [ProductController::class, 'destroy'])->name('index.destroy');
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/', [ProductController::class, 'index'])->name('product.product');
-Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-Route::post('/product', [ProductController::class, 'store'])->name('product.store');
-Route::get('/product/{id}/show', [ProductController::class, 'show'])->name('product.show');
-Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
-Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
-Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+Route::middleware('guest')->group(function () {
+    Route::get('/registrasi', [AuthController::class, 'tampilRegistrasi'])->name('registrasi.tampil');
+    Route::post('/registrasi/submit', [AuthController::class, 'submitRegistrasi'])->name('registrasi.submit');
+
+    Route::get('/login', [AuthController::class, 'tampilLogin'])->name('login');
+    Route::post('/login/submit', [AuthController::class, 'submitLogin'])->name('login.submit');
+});
+
+
+Route::get('/siswa', [SiswaController::class, 'tampil'])->name('siswa.tampil');
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/siswa/tambah', [SiswaController::class, 'tambah'])->name('siswa.tambah');
+    Route::post('/siswa/submit', [SiswaController::class, 'submit'])->name('siswa.submit');
+    Route::get('/siswa/edit/{id}',  [SiswaController::class, 'edit'])->name('siswa.edit');
+    Route::put('/siswa/update/{id}',  [SiswaController::class, 'update'])->name('siswa.update');
+    Route::delete('/siswa/destroy/{id}',  [SiswaController::class, 'destroy'])->name('siswa.destroy');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+Route::get('/contact', [ContactController::class, 'tampil'])->name('contact.tampil');
+Route::get('/features',[FeaturesController::class,'tampil'])->name('features.tampil');
+// routes/web.php
+Route::get('/siswa/{id}', [SiswaController::class, 'show'])->name('siswa.show');
